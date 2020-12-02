@@ -16,9 +16,20 @@ class PasswordValidatorTest {
     }
 
     @Test
-    fun `small dataset should contain two valid passwords`() {
-        val nrOfValidPasswords = passwordValidator.findNrOfValidPasswords()
+    fun `small dataset should contain two valid passwords using occurrence mode`() {
+        val validationMode = ValidationMode.OCCURRENCE
+
+        val nrOfValidPasswords = passwordValidator.findNrOfValidPasswords(validationMode)
 
         assertThat(nrOfValidPasswords).isEqualTo(2)
+    }
+
+    @Test
+    fun `small dataset should contain one valid password using positional mode`() {
+        val validationMode = ValidationMode.POSITIONAL
+
+        val nrOfValidPasswords = passwordValidator.findNrOfValidPasswords(validationMode)
+
+        assertThat(nrOfValidPasswords).isEqualTo(1)
     }
 }
