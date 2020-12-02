@@ -1,4 +1,4 @@
-package nl.quintor.aoc.day1
+package nl.quintor.aoc.core
 
 import java.nio.file.Files
 import java.nio.file.Path

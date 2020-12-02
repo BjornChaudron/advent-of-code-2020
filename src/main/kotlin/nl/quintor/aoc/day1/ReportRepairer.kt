@@ -1,5 +1,6 @@
 package nl.quintor.aoc.day1
 
+import nl.quintor.aoc.core.FileReader
 import java.nio.file.Path
 import java.nio.file.Paths
 
