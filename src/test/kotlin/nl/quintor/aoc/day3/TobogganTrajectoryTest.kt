@@ -17,8 +17,16 @@ class TobogganTrajectoryTest {
 
     @Test
     fun `should encounter 7 trees on small dataset`() {
-        val nrOfTrees = tobogganTrajectory.findNrOfTrees()
+        val slope = Slope(3, 1)
+        val nrOfTrees = tobogganTrajectory.findNrOfTrees(slope)
 
-        assertThat(nrOfTrees).isEqualTo(3)
+        assertThat(nrOfTrees).isEqualTo(7)
+    }
+
+    @Test
+    fun `should get product of 336 after multiplying amount of trees per slope`() {
+        val product = tobogganTrajectory.getProductOfTreesPerSlope()
+
+        assertThat(product).isEqualTo(336)
     }
 }
