@@ -16,8 +16,8 @@ class PassportProcessorTest {
 
     @Test
     fun `test dataset should contain 2 valid passports`() {
-        val validPassportEntries = passportProcessor.countPasswordsWithAllRequiredFields()
+        val validPassportEntries = passportProcessor.getPasswordsWithAllRequiredFields()
 
-        assertThat(validPassportEntries).isEqualTo(2)
+        assertThat(validPassportEntries.size).isEqualTo(2)
     }
 }

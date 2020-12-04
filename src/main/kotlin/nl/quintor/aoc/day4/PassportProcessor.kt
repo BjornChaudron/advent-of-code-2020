@@ -9,9 +9,13 @@ typealias PassportEntry = Map<String, String?>
 fun main() {
     val path = Paths.get("src", "main", "resources", "day4", "input.txt")
     val passportProcessor = PassportProcessor(path)
-    val nrOfValidPasswords = passportProcessor.countPasswordsWithAllRequiredFields()
+    val passwordEntriesWithAllRequiredFields = passportProcessor.getPasswordsWithAllRequiredFields()
 
-    println("$nrOfValidPasswords passwords contain all required fields!")
+    println("${passwordEntriesWithAllRequiredFields.size} passwords contain all required fields!")
+
+    val validPasswords = passportProcessor.validatePasswordEntries(passwordEntriesWithAllRequiredFields)
+
+    println("${validPasswords.size} passwords are valid!")
 }
 
 class PassportProcessor(
@@ -20,11 +24,17 @@ class PassportProcessor(
     private val passportFileParser: PassportFileParser = PassportFileParser(),
     private val passportValidator: PassportValidator = PassportValidator()
 ) {
-    fun countPasswordsWithAllRequiredFields(): Int {
+    fun getPasswordsWithAllRequiredFields(): List<PassportEntry> {
         val content = fileReader.readFile(path)
         val passportEntries = passportFileParser.parsePassportEntries(content)
 
-        return passportEntries.count { entry -> passportValidator.containsAllRequiredFields(entry) }
+        return passportEntries.filter { entry -> passportValidator.containsAllRequiredFields(entry) }
+    }
+
+    fun validatePasswordEntries(passwordEntries: List<PassportEntry>): List<Passport> {
+        return passwordEntries
+            .map { entry -> Passport.fromPassportEntry(entry) }
+            .filter { passport -> passportValidator.isValid(passport) }
     }
 }
 
@@ -53,9 +63,9 @@ class PassportFileParser {
         val values = mutableMapOf<String, String?>()
 
         columns.forEach { column ->
-            val regex = """$column:[\w#]*""".toRegex()
+            val regex = """$column:(?<value>[\w#]*)""".toRegex()
             val match = regex.find(entry)
-            values[column] = match?.value
+            values[column] = match?.groups?.get("value")?.value
         }
 
         return values
@@ -64,8 +74,65 @@ class PassportFileParser {
 
 class PassportValidator {
     private val requiredColumns = listOf("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
+    private val eyeColors = listOf("amb", "blu", "brn", "gry", "grn", "hzl", "oth")
 
     fun containsAllRequiredFields(passportEntry: PassportEntry): Boolean {
         return requiredColumns.all { column -> passportEntry[column] != null }
+    }
+
+    fun isValid(passport: Passport): Boolean {
+        return validateBirthYear(passport.birthYear) &&
+                validateIssueYear(passport.issueYear) &&
+                validateExpirationYear(passport.expirationYear) &&
+                validateHeight(passport.height) &&
+                validateHairColor(passport.hairColor) &&
+                validateEyeColor(passport.eyeColor) &&
+                validatePassportId(passport.passportId)
+    }
+
+    private fun validateBirthYear(birthYear: Int): Boolean = birthYear in 1920..2002
+
+    private fun validateIssueYear(issueYear: Int): Boolean = issueYear in 2010..2020
+
+    private fun validateExpirationYear(expirationYear: Int): Boolean = expirationYear in 2020..2030
+
+    private fun validateHeight(height: String): Boolean {
+        return when {
+            height.endsWith("cm") -> height.replace("cm", "").toInt() in 150..193
+            height.endsWith("in") -> height.replace("in", "").toInt() in 59..76
+            else -> false
+        }
+    }
+
+    private fun validateHairColor(hairColor: String): Boolean = hairColor.matches("""#[0-9a-f]{6}""".toRegex())
+
+    private fun validateEyeColor(eyeColor: String): Boolean = eyeColor.toLowerCase() in eyeColors;
+
+    private fun validatePassportId(passportId: String): Boolean = passportId.matches("""\d{9}""".toRegex())
+}
+
+data class Passport(
+    val birthYear: Int,
+    val issueYear: Int,
+    val expirationYear: Int,
+    val height: String,
+    val hairColor: String,
+    val eyeColor: String,
+    val passportId: String,
+    val countryId: String?
+) {
+    companion object {
+        fun fromPassportEntry(passportEntry: PassportEntry): Passport {
+            return Passport(
+                passportEntry["byr"]!!.toInt(),
+                passportEntry["iyr"]!!.toInt(),
+                passportEntry["eyr"]!!.toInt(),
+                passportEntry["hgt"]!!,
+                passportEntry["hcl"]!!,
+                passportEntry["ecl"]!!,
+                passportEntry["pid"]!!,
+                passportEntry["cid"]
+            )
+        }
     }
 }
