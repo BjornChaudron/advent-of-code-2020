@@ -15,12 +15,20 @@ class AirlineSeatFinderTest {
     }
 
     @Test
-    fun `FBFBBFFRLR should split row and column instruction correctly`() {
-        val instruction = "FBFBBFFRLR"
+    fun `highest seatId should be 820`() {
+        val seats = airlineSeatFinder.getSeats()
 
-        val (rowInstruction, columnInstruction) = airlineSeatFinder.splitRowAndColumnData(instruction);
+        val highestSeatId = airlineSeatFinder.findHighestSeatId(seats)
 
-        assertThat(rowInstruction).isEqualTo("FBFBBFF")
-        assertThat(columnInstruction).isEqualTo("RLR")
+        assertThat(highestSeatId).isEqualTo(820)
+    }
+
+    @Test
+    fun `my seatId should be 120`() {
+        val seats = airlineSeatFinder.getSeats()
+
+        val mySeatId = airlineSeatFinder.findMySeat(seats)
+
+        assertThat(mySeatId).isEqualTo(120)
     }
 }

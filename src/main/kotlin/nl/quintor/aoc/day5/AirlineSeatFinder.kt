@@ -19,6 +19,9 @@ fun main() {
     val seats = airlineSeatFinder.getSeats();
     val highestSeatId = airlineSeatFinder.findHighestSeatId(seats)
     println("Highest seatId is $highestSeatId\n")
+
+    val mySeatId = airlineSeatFinder.findMySeat(seats)
+    println("My seatId is $mySeatId")
 }
 
 class AirlineSeatFinder(private val path: Path, private val fileReader: FileReader = FileReader()) {
@@ -69,6 +72,13 @@ class AirlineSeatFinder(private val path: Path, private val fileReader: FileRead
 
     private fun parseBinaryInstruction(instruction: String): Int {
         return instruction.toInt(2)
+    }
+
+    fun findMySeat(seats: List<Seat>): Int {
+        val occupiedSeatIds = seats.map { it.seatId }
+        val allSeatIds = occupiedSeatIds.first()..occupiedSeatIds.last()
+
+        return allSeatIds.first { it !in occupiedSeatIds }
     }
 }
 
