@@ -11,7 +11,7 @@ fun main() {
     val sumOfDistinctGroupAnswers = customsDeclarationsParser.getSumOfDistinctGroupAnswers()
     println("The sum of unique answers per group is: $sumOfDistinctGroupAnswers\n")
 
-    val sumOfCommonGroupAnswers = customsDeclarationsParser.getSumOfCommonAnswers()
+    val sumOfCommonGroupAnswers = customsDeclarationsParser.getSumOfCommonGroupAnswers()
     print("The sum of common answers per group is: $sumOfCommonGroupAnswers")
 }
 
@@ -28,7 +28,9 @@ class CustomsDeclarationsParser(private val path: Path, private val fileReader: 
             }.sum()
     }
 
-    fun getSumOfCommonAnswers(): Int {
+    private fun groupAnswersByGroup(allAnswers: String): List<String> = allAnswers.split("\n\n")
+
+    fun getSumOfCommonGroupAnswers(): Int {
         val content = fileReader.readFile(path)
         val answersByGroup = groupAnswersByGroup(content)
 
@@ -45,6 +47,4 @@ class CustomsDeclarationsParser(private val path: Path, private val fileReader: 
                 answersPerGroupMember.all { answer -> question in answer }
             }.count()
     }
-
-    private fun groupAnswersByGroup(allAnswers: String): List<String> = allAnswers.split("\n\n")
 }
