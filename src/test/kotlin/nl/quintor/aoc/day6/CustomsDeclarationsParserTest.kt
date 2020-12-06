@@ -15,9 +15,16 @@ class CustomsDeclarationsParserTest {
     }
 
     @Test
-    fun `sum of answers should be 11`() {
+    fun `sum of unique answers by group should be 11`() {
         val sumOfDistinctAnswers = customsDeclarationsParser.getSumOfDistinctGroupAnswers()
 
         assertThat(sumOfDistinctAnswers).isEqualTo(11)
+    }
+
+    @Test
+    fun `sum of common answers by should be 6`() {
+        val sumOfDistinctAnswers = customsDeclarationsParser.getSumOfCommonAnswers()
+
+        assertThat(sumOfDistinctAnswers).isEqualTo(6)
     }
 }
