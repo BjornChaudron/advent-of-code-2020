@@ -16,7 +16,7 @@ fun main() {
 }
 
 class CustomsDeclarationsParser(private val path: Path, private val fileReader: FileReader = FileReader()) {
-    val questions = 'a'..'z'
+    private val questions = 'a'..'z'
 
     fun getSumOfDistinctGroupAnswers(): Int {
         val content = fileReader.readFile(path)
