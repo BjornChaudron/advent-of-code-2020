@@ -20,7 +20,7 @@ class ReportRepairer(private val filePath: Path) {
     private val fileReader = FileReader()
 
     fun getProductOfPair(): Int {
-        val lines = fileReader.readFile(filePath)
+        val lines = fileReader.readAllLines(filePath)
         val numbers = parseNumbers(lines)
 
         val pair = findPair(numbers)
@@ -48,7 +48,7 @@ class ReportRepairer(private val filePath: Path) {
 
     // Part 2
     fun getProductOfTriple(): Int {
-        val lines = fileReader.readFile(filePath)
+        val lines = fileReader.readAllLines(filePath)
         val numbers = parseNumbers(lines)
 
         val pair = findTriple(numbers)
