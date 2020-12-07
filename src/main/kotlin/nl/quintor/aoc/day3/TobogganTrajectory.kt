@@ -20,7 +20,7 @@ fun main() {
 
 class TobogganTrajectory(private val path: Path, private val fileReader: FileReader = FileReader()) {
     fun findNrOfTrees(slope: Slope): Long {
-        val lines = fileReader.readFile(path)
+        val lines = fileReader.readAllLines(path)
         var horizontalPosition = 0
         var nrOfTrees: Long = 0
 

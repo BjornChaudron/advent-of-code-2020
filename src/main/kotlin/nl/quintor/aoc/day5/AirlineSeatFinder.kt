@@ -37,7 +37,7 @@ class AirlineSeatFinder(private val path: Path, private val fileReader: FileRead
     }
 
     fun getSeats(): List<Seat> {
-        return fileReader.readFile(path)
+        return fileReader.readAllLines(path)
             .map { instruction -> getSeat(instruction) }
             .sortedBy { seat -> seat.seatId }
     }

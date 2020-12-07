@@ -4,7 +4,11 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class FileReader {
-    fun readFile(path: Path): List<String> {
+    fun readAllLines(path: Path): List<String> {
         return Files.readAllLines(path)
+    }
+
+    fun readFile(path: Path): String {
+        return Files.readString(path)
     }
 }

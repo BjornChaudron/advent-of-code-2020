@@ -1,5 +1,6 @@
 package nl.quintor.aoc.day4
 
+import nl.quintor.aoc.core.FileReader
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -20,7 +21,7 @@ fun main() {
 
 class PassportProcessor(
     private val path: Path,
-    private val fileReader: PassportFileReader = PassportFileReader(),
+    private val fileReader: FileReader = FileReader(),
     private val passportFileParser: PassportFileParser = PassportFileParser(),
     private val passportValidator: PassportValidator = PassportValidator()
 ) {
@@ -35,12 +36,6 @@ class PassportProcessor(
         return passwordEntries
             .map { entry -> Passport.fromPassportEntry(entry) }
             .filter { passport -> passportValidator.isValid(passport) }
-    }
-}
-
-class PassportFileReader {
-    fun readFile(path: Path): String {
-        return Files.readString(path)
     }
 }
 

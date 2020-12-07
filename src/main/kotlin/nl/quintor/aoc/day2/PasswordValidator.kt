@@ -22,7 +22,7 @@ fun main() {
 class PasswordValidator(private val path: Path, private val fileReader: FileReader = FileReader()) {
 
     fun findNrOfValidPasswords(validationMode: ValidationMode): Int {
-        val lines = fileReader.readFile(path)
+        val lines = fileReader.readAllLines(path)
         val passwordPolicies = lines.map { line -> PasswordPolicy.parsePasswordPolicy(line) }
 
         val validator = getValidator(validationMode)
