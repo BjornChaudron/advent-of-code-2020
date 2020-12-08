@@ -10,6 +10,12 @@ fun main() {
 
     gameConsole.bootWithDefaultBootSequence()
     println("Boot sequence completed. Accumulator: ${gameConsole.acc}")
+
+    gameConsole.reset()
+
+    println("Booting console in safe mode ..")
+    gameConsole.repairBootSequence()
+    println("Boot sequence repaired. Accumulator: ${gameConsole.acc}")
 }
 
 class GameConsole(private val path: Path, private val fileReader: FileReader = FileReader()) {
@@ -21,7 +27,7 @@ class GameConsole(private val path: Path, private val fileReader: FileReader = F
         return boot(bootSequence)
     }
 
-    fun boot(bootSequence: List<Instruction>): Boolean {
+    private fun boot(bootSequence: List<Instruction>): Boolean {
         var procedure = 0
         val processed = mutableSetOf<Int>()
 
@@ -34,7 +40,7 @@ class GameConsole(private val path: Path, private val fileReader: FileReader = F
 
             when (op) {
                 "acc" -> acc += arg
-                "jmp" -> procedure += arg -1
+                "jmp" -> procedure += arg - 1
             }
 
             procedure++
@@ -47,6 +53,38 @@ class GameConsole(private val path: Path, private val fileReader: FileReader = F
         return fileReader.readAllLines(path)
             .map { it.split(" ") }
             .map { (op, arg) -> Instruction(op, arg.toInt()) }
+    }
+
+    fun reset() {
+        acc = 0
+    }
+
+    fun repairBootSequence(): Boolean {
+        val bootSequences = generateBootSequences()
+        bootSequences.forEach { bootSequence ->
+            val isSuccessful = boot(bootSequence)
+
+            if (isSuccessful) return true
+            reset()
+        }
+
+        return false
+    }
+
+    private fun generateBootSequences(): Sequence<List<Instruction>> {
+        val defaultBootSequence = loadBootSequence()
+        val bootSequences = mutableListOf<List<Instruction>>()
+        for (i in defaultBootSequence.indices) {
+            val (op, arg) = defaultBootSequence[i]
+            if (op in listOf("nop", "jmp")) {
+                val newOp = if (op == "nop") "jmp" else "nop"
+                defaultBootSequence.toMutableList()
+                    .apply { this[i] = Instruction(newOp, arg) }
+                    .also { bootSequences.add(it) }
+            }
+        }
+
+        return bootSequences.asSequence()
     }
 }
 

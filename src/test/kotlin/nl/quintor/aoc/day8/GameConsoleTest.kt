@@ -16,10 +16,18 @@ class GameConsoleTest {
     }
 
     @Test
-    fun `should accumulate to 5 using test boot instructions`() {
+    fun `should accumulate to 5 using default boot instructions`() {
         gameConsole.bootWithDefaultBootSequence()
 
         val acc = gameConsole.acc
         assertThat(acc).isEqualTo(5)
+    }
+
+    @Test
+    fun `should accumulate to 8 using boot sequence repair`() {
+        gameConsole.repairBootSequence()
+
+        val acc = gameConsole.acc
+        assertThat(acc).isEqualTo(8)
     }
 }
