@@ -22,4 +22,13 @@ class XmasDecoderTest {
 
         assertThat(sequenceBreaker).isEqualTo(127)
     }
+
+    @Test
+    fun `test should find encryption weakness of 62`() {
+        xmasDecoder.maxPreambleSize = 5
+
+        val encryptionWeakness = xmasDecoder.findEncryptionWeakness()
+
+        assertThat(encryptionWeakness).isEqualTo(62)
+    }
 }

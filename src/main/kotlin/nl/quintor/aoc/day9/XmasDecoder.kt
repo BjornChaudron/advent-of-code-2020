@@ -10,6 +10,9 @@ fun main() {
     val xmasDecoder = XmasDecoder(path, maxPreambleSize)
     val sequenceBreaker = xmasDecoder.findSequenceBreaker()
     println("The number that broke the sequence is $sequenceBreaker")
+
+    val encryptionWeakness = xmasDecoder.findEncryptionWeakness()
+    println("The encryption weakness is $encryptionWeakness")
 }
 
 class XmasDecoder(
@@ -49,4 +52,33 @@ class XmasDecoder(
             .readAllLines(path)
             .map { s -> s.toLong() }
     }
+
+    fun findEncryptionWeakness(): Long {
+        val sequenceBreaker = findSequenceBreaker()
+
+        val sequence = readFile()
+        val preamble = ArrayDeque<Long>()
+        var encryptionBreakers = mutableListOf<Long>()
+
+        for (index in sequence.indices) {
+            val currentStreak = mutableListOf(sequence[index])
+            var offset = 1
+
+            while (currentStreak.sum() < sequenceBreaker) {
+                val nextValue = sequence[index + offset]
+                currentStreak.add(nextValue)
+                offset++
+            }
+
+            if (currentStreak.sum() == sequenceBreaker) {
+                encryptionBreakers = currentStreak
+                break
+            }
+        }
+
+        encryptionBreakers.sort()
+
+        return encryptionBreakers.first() + encryptionBreakers.last()
+    }
+
 }
