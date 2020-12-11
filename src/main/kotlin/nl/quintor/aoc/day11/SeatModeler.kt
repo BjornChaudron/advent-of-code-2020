@@ -3,6 +3,8 @@ package nl.quintor.aoc.day11
 import nl.quintor.aoc.core.FileReader
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
+import kotlin.system.measureTimeMillis
 
 fun main() {
     val path = Paths.get("src", "main", "resources", "day11", "input.txt")
@@ -12,8 +14,13 @@ fun main() {
 }
 
 class SeatModeler(private val path: Path, private val fileReader: FileReader = FileReader()) {
+
+    private val seatsIndex = mutableMapOf<UUID, List<Seat>>()
+
     fun getOccupiedSeats(): Int {
         val seats = readSeats()
+        cacheAdjacentSeats(seats)
+
         var previouslyOccupiedSeats = 0
         var currentlyOccupiedSeats = 0
 
@@ -23,7 +30,7 @@ class SeatModeler(private val path: Path, private val fileReader: FileReader = F
             val seatsToBeEmptied = mutableListOf<Seat>()
 
             seats.forEach { seat ->
-                val occupiedAdjacentSeats = getAdjacentSeats(seats, seat).count { it.isOccupied }
+                val occupiedAdjacentSeats = seatsIndex[seat.id]!!.count { it.isOccupied }
 
                 when {
                     occupiedAdjacentSeats == 0 -> seatsToBeOccupied.add(seat)
@@ -49,12 +56,19 @@ class SeatModeler(private val path: Path, private val fileReader: FileReader = F
             .mapIndexed { rowIndex, row ->
                 row.mapIndexed { columnIndex, seat ->
                     if (seat != '.')
-                        Seat(rowIndex, columnIndex)
+                        Seat(UUID.randomUUID(), rowIndex, columnIndex)
                     else
                         null
                 }.filterNotNull()
             }
             .flatMap { it.toList() }
+    }
+
+    private fun cacheAdjacentSeats(seats: List<Seat>) {
+        seats.forEach { seat ->
+            val adjacentSeats = getAdjacentSeats(seats, seat)
+            seatsIndex[seat.id] = adjacentSeats
+        }
     }
 
     private fun getAdjacentSeats(seats: List<Seat>, seat: Seat): List<Seat> {
@@ -66,4 +80,4 @@ class SeatModeler(private val path: Path, private val fileReader: FileReader = F
 
 }
 
-data class Seat(val row: Int, val column: Int, var isOccupied: Boolean = false)
+data class Seat(val id: UUID, val row: Int, val column: Int, var isOccupied: Boolean = false)
