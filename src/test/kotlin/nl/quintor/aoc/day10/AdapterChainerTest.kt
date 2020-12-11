@@ -24,4 +24,14 @@ class AdapterChainerTest {
 
         assertThat(distribution.triples).isEqualTo(5)
     }
+
+    @Test
+    fun `small dataset should have sum of possible combinations of 8`() {
+        adapterChainer = AdapterChainer(path)
+
+        val nrOfPossibleCombinations = adapterChainer.getNrOfPossibleAdapterCombinations()
+
+        assertThat(nrOfPossibleCombinations).isEqualTo(8)
+    }
+
 }
